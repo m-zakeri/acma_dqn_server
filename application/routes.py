@@ -1,6 +1,7 @@
 from application import app, api
 from flask import jsonify
 from flask_restplus import Resource, fields
+from application.dqn import DQ
 
 # @app.route('/')
 # def hello():
@@ -25,3 +26,16 @@ class GetAndPost(Resource):
             'lname': data['last-name']
         }
         return jsonify(dic)
+
+
+@api.route('/get-q-values/')
+class get_q_values(Resource):
+    def post(self):
+        data = api.payload
+        state = data['state']
+        dic = {
+            'q_values': DQ.network.get_q_values(state=state)
+        }
+        return jsonify(dic)
+
+
