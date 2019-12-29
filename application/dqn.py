@@ -1,5 +1,5 @@
 import tensorflow as tf
-
+import numpy as np
 
 class DQNCore:
     def __init__(self, learning_rate, discount):
@@ -51,6 +51,13 @@ class DQN:
     @staticmethod
     def train(state, q_values):
         DQN.__network.train(state, q_values)
+
+    @staticmethod
+    def get_experience(old_state, action, new_state, reward):
+        old_state_q_values = DQN.__network.get_q_values(old_state)
+        new_state_q_values = DQN.__network.get_q_values(new_state)
+        old_state_q_values[action] = reward + DQN.__network.discount * np.amax(new_state_q_values)
+        DQN.__network.train(old_state, old_state_q_values)
 
     @staticmethod
     def get_state_regular_len():
