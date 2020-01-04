@@ -47,7 +47,16 @@ def get_and_evaluate(data, element_name, element_type):
     return desired_element
 
 
+def get_and_evaluate_reward(data):
+    desired_element = data['reward']
+
+    if not (isinstance(desired_element, int) or isinstance(desired_element, float)):
+        raise BadRequest("Reward must be numeric but it is {}!".format(type(desired_element).__name__))
+
+    return desired_element
+
 # APIs:
+
 
 @api.route('/get_q_values/')
 class GetQValues(Resource):
@@ -80,7 +89,7 @@ class GetExperience(Resource):
         old_state = get_and_evaluate_numeric_list(data, list_name='old_state', length=DQN.get_state_regular_len())
         action = get_and_evaluate(data, element_name='action', element_type=int)
         new_state = get_and_evaluate_numeric_list(data, list_name='new_state', length=DQN.get_state_regular_len())
-        reward = get_and_evaluate(data, element_name='reward', element_type=float)
+        reward = get_and_evaluate_reward(data)
         DQN.get_experience(old_state, action, new_state, reward)
         return jsonify({
             "message": "Now I've got more gray beard!"
