@@ -23,6 +23,10 @@ get_experience_model_request_body_model = api.model('GetExperienceModel', {
     'reward': fields.Float,
 })
 
+trained_network_request_body_model = api.model('TrainedNetworkWeightsModel', {
+    'model_name': fields.String
+})
+
 
 # error handling functions:
 def get_and_evaluate_numeric_list(data, list_name, length):
@@ -55,9 +59,8 @@ def get_and_evaluate_reward(data):
 
     return desired_element
 
+
 # APIs:
-
-
 @api.route('/get_q_values/')
 class GetQValues(Resource):
     @api.doc(body=get_q_values_request_body_model)
@@ -95,3 +98,26 @@ class GetExperience(Resource):
             "message": "Now I've got more gray beard!"
         })
 
+
+@api.route('/save_wights/')
+class SaveModel(Resource):
+    @api.doc(body=trained_network_request_body_model)
+    def post(self):
+        data = api.payload
+        model_name = get_and_evaluate(data, element_name='model_name', element_type=str)
+        DQN.save_model(model_name)
+        return jsonify({
+            'message': 'Weights saved successfully'
+        })
+
+
+@api.route('/load_weights/')
+class SaveModel(Resource):
+    @api.doc(body=trained_network_request_body_model)
+    def post(self):
+        data = api.payload
+        model_name = get_and_evaluate(data, element_name='model_name', element_type=str)
+        DQN.load_model(model_name)
+        return jsonify({
+            'message': 'Weights loaded successfully'
+        })

@@ -38,6 +38,10 @@ class DQNCore:
     def train(self, state, q_values):
         self.model.fit(x=[state, ], y=[q_values, ], epochs=1)
 
+    def load_model(self, path):
+        self.model = tf.keras.models.load_model(path)
+
+
 # todo: old_state_q_values[action] = reward + self.discount * np.amax(new_state_q_values)
 
 
@@ -66,3 +70,11 @@ class DQN:
     @staticmethod
     def get_q_values_list_regular_len():
         return DQN.__network.get_output_size()
+
+    @staticmethod
+    def save_model(name):
+        DQN.__network.model.save('./trained_models/{}.h5'.format(name))
+
+    @staticmethod
+    def load_model(name):
+        DQN.__network.load_model('./trained_models/{}.h5'.format(name))
