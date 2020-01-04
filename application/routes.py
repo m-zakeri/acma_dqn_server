@@ -117,7 +117,12 @@ class SaveModel(Resource):
     def post(self):
         data = api.payload
         model_name = get_and_evaluate(data, element_name='model_name', element_type=str)
-        DQN.load_model(model_name)
-        return jsonify({
-            'message': 'Weights loaded successfully'
-        })
+        try:
+            DQN.load_model(model_name)
+            return jsonify({
+                'message': 'Weights loaded successfully'
+            })
+        except OSError:
+            return jsonify({
+                'message': 'Model {} does not exist!'.format(model_name)
+            })
