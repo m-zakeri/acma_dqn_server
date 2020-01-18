@@ -9,8 +9,8 @@ class DQNCore:
         self.__output_count = 49
 
         self.__define_model()
-        self.model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
-                           loss=tf.losses.Huber(),
+        self.model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=learning_rate),
+                           loss=tf.keras.losses.mean_squared_error,
                            metrics=[tf.metrics.Accuracy()])
         self.model.summary()
 
@@ -18,11 +18,11 @@ class DQNCore:
         self.model = tf.keras.models.Sequential([
             tf.keras.layers.Dense(units=32,
                                   activation=tf.keras.activations.relu,
-                                  kernel_initializer=tf.keras.initializers.he_normal(),
+                                  kernel_initializer=tf.keras.initializers.zeros(),
                                   input_shape=(self.__input_count,)),
             tf.keras.layers.Dense(units=40,
                                   activation=tf.keras.activations.relu,
-                                  kernel_initializer=tf.keras.initializers.he_normal()),
+                                  kernel_initializer=tf.keras.initializers.zeros()),
             tf.keras.layers.Dense(units=self.__output_count)
         ])
 
